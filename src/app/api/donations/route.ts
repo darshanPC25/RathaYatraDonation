@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     // Ensure qtr is a number
     if (typeof donation.qtr === 'string') {
-      donation.qtr = parseInt(donation.qtr.replace('Qtr ', ''));
+      donation.qtr = parseInt((donation.qtr as string).replace('Qtr ', ''));
     }
 
     // Ensure amount is a number
