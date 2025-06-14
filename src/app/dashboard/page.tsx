@@ -135,7 +135,12 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-      <DonationGrid donations={donations} />
+      <DonationGrid 
+        donations={donations} 
+        onDonationDeleted={() => {
+          router.refresh();
+        }}
+      />
     </div>
   );
 } 
