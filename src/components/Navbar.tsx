@@ -25,7 +25,7 @@ export default function Navbar({ donations = [] }: NavbarProps) {
               <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                 <span className="text-indigo-600 font-bold text-xl">D</span>
               </div>
-              <span className="text-white font-semibold text-lg">Donation Tracker</span>
+              <span className="text-white font-semibold text-lg">Ratha Yatra Donation</span>
             </Link>
           </div>
 

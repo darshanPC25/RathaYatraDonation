@@ -58,107 +58,134 @@ export default function DonationForm() {
     }));
   };
 
-  return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Donation Form</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Block</label>
-          <select
-            name="block"
-            value={formData.block}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="">Select Block</option>
-            {BLOCKS.map((block) => (
-              <option key={block} value={block}>
-                Block {block}
-              </option>
-            ))}
-          </select>
-        </div>
+  const getFloorsForBlock = (block: string): number[] => {
+    if (block === 'B' || block === 'C') {
+      return Array.from({ length: 9 }, (_, i) => i + 1);
+    }
+    return Array.from({ length: 11 }, (_, i) => i + 1);
+  };
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Floor</label>
-          <select
-            name="floor"
-            value={formData.floor}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            {formData.block &&
-              getFloorsForBlock(formData.block).map((floor) => (
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Add New Donation</h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Block Selection */}
+          <div>
+            <label htmlFor="block" className="block text-sm font-medium text-gray-700 mb-1">
+              Block
+            </label>
+            <select
+              id="block"
+              value={formData.block}
+              onChange={(e) => setFormData({ ...formData, block: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            >
+              <option value="">Select Block</option>
+              {BLOCKS.map((block) => (
+                <option key={block} value={block}>
+                  Block {block}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Floor Selection */}
+          <div>
+            <label htmlFor="floor" className="block text-sm font-medium text-gray-700 mb-1">
+              Floor
+            </label>
+            <select
+              id="floor"
+              value={formData.floor}
+              onChange={(e) => setFormData({ ...formData, floor: parseInt(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            >
+              <option value="">Select Floor</option>
+              {formData.block && getFloorsForBlock(formData.block).map((floor) => (
                 <option key={floor} value={floor}>
                   Floor {floor}
                 </option>
               ))}
-          </select>
+            </select>
+          </div>
+
+          {/* Quarter Selection */}
+          <div>
+            <label htmlFor="qtr" className="block text-sm font-medium text-gray-700 mb-1">
+              Quarter
+            </label>
+            <select
+              id="qtr"
+              value={formData.qtr}
+              onChange={(e) => setFormData({ ...formData, qtr: parseInt(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            >
+              <option value="">Select Quarter</option>
+              {QUARTERS.map((qtr) => (
+                <option key={qtr} value={qtr}>
+                  Quarter {qtr}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Amount Input */}
+          <div>
+            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+              Amount (₹)
+            </label>
+            <input
+              type="number"
+              id="amount"
+              value={formData.amount}
+              onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter amount"
+              required
+              min="1"
+            />
+          </div>
+
+          {/* Payment Mode Selection */}
+          <div>
+            <label htmlFor="paymentMode" className="block text-sm font-medium text-gray-700 mb-1">
+              Payment Mode
+            </label>
+            <select
+              id="paymentMode"
+              value={formData.paymentMode}
+              onChange={(e) => setFormData({ ...formData, paymentMode: e.target.value as 'online' | 'offline' })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            >
+              <option value="">Select Payment Mode</option>
+              <option value="online">Online</option>
+              <option value="offline">Offline</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Quarter</label>
-          <select
-            name="qtr"
-            value={formData.qtr}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`
+              px-6 py-2.5 rounded-lg text-white font-medium
+              ${isSubmitting 
+                ? 'bg-indigo-400 cursor-not-allowed' 
+                : 'bg-indigo-600 hover:bg-indigo-700'
+              }
+              transition-colors duration-200
+            `}
           >
-            {QUARTERS.map((qtr) => (
-              <option key={qtr} value={qtr}>
-                Quarter {qtr}
-              </option>
-            ))}
-          </select>
+            {isSubmitting ? 'Adding...' : 'Add Donation'}
+          </button>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Amount (₹)</label>
-          <input
-            type="number"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-            min="0"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Payment Mode</label>
-          <select
-            name="paymentMode"
-            value={formData.paymentMode}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="online">Online</option>
-            <option value="offline">Offline</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit Donation'}
-        </button>
-
-        {message && (
-          <p
-            className={`text-center ${
-              message.includes('Error') ? 'text-red-600' : 'text-green-600'
-            }`}
-          >
-            {message}
-          </p>
-        )}
       </form>
     </div>
   );
